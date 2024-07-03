@@ -1,13 +1,17 @@
-FROM python:3.9
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
 
-# 將專案複製到容器中
-COPY . /app
+# Set the working directory in the container
 WORKDIR /app
 
-# 安裝必要的套件
-RUN pip install --upgrade pip
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Copy the requirements file into the container
+COPY requirements.txt requirements.txt
 
-EXPOSE 8080
-CMD uvicorn main:app --host=0.0.0.0 --port=$PORT
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code into the container
+COPY . .
+
+# Specify the command to run on container start
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
